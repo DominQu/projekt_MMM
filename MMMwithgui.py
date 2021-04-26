@@ -120,13 +120,6 @@ class Page(tk.Frame):
 class Taylor:
 
     def __init__(self):
-        #initialize parameters
-        '''self.a = 1.
-        self.b = 1.
-        self.A = 1.                                 #wartość lub amplituda sygnału c
-        self.amp = 1                                #amplituda sygnału pobudzenia
-        self.B = 1.
-        '''
         #constants
         self.T = 20.
         self.N = 10000                              #liczba kroków symulacji
