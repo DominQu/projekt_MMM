@@ -185,4 +185,3 @@ if __name__ == "__main__":
     root = Window(model)
     ani = animation.FuncAnimation(f, animate, interval=1000)
     root.mainloop()
-# %%
