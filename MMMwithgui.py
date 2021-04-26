@@ -11,14 +11,16 @@ from tkinter import ttk
 import math
 
 #create plot and initialize aniamtion function
-f = Figure(figsize=(8,5), dpi=100)
+f = Figure(figsize=(10,8), dpi=100)
 a = f.add_subplot(111)
+
 def animate_plot():
+
     a.clear()
     a.plot(model.time, root.page1.model.y, "#00A3E0", label="sygnał y")
     a.plot(model.time, root.page1.model.c, "#183A54", label="sygnał c")
-    a.legend(loc=3, ncol=2)
-    a.set_title("Przebieg wartości y")
+    a.plot(model.time, root.page1.model.u, "#EE8E3B", label="sygnał u")
+    a.legend(loc=2, bbox_to_anchor=(0.22,1.1,), ncol=3, borderaxespad=0)
 
 class Window(tk.Tk):
 
