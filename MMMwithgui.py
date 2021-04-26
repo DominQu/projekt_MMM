@@ -13,7 +13,7 @@ import math
 #create plot and initialize aniamtion function
 f = Figure(figsize=(8,5), dpi=100)
 a = f.add_subplot(111)
-def animate(i):
+def animate_plot():
     a.clear()
     a.plot(model.time, root.page1.model.y, "#00A3E0", label="sygnał y")
     a.plot(model.time, root.page1.model.c, "#183A54", label="sygnał c")
@@ -116,6 +116,8 @@ class Page(tk.Frame):
         
         self.model.update(param_a = float(self.a_var.get()), param_b = float(self.b_var.get()), param_A = float(self.A_var.get()),
                           param_Amp = float(self.Amp_var.get()), param_B = float(self.B_var.get()), rodzaj_c = self.c_var.get(), pobudzenie = self.radio_var.get())
+        animate_plot()
+        f.canvas.draw()
         
 class Taylor:
 
@@ -183,5 +185,4 @@ class Taylor:
 if __name__ == "__main__":
     model = Taylor()
     root = Window(model)
-    ani = animation.FuncAnimation(f, animate, interval=1000)
     root.mainloop()
