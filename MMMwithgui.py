@@ -2,7 +2,6 @@ import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
-import matplotlib.animation as animation
 from matplotlib import style
 style.use('ggplot')
 
@@ -10,7 +9,7 @@ import tkinter as tk
 from tkinter import ttk
 import math
 
-#create plot and initialize aniamtion function
+#create plot and initialize animation function
 f = Figure(figsize=(10,8), dpi=100)
 a = f.add_subplot(111)
 
@@ -38,9 +37,12 @@ class Page(tk.Frame):
 
         super().__init__(master)
         
-        #object responsible for mathematical calculations
         self.model = model
         
+        #--------------------------
+        # GUI elements:
+        #--------------------------
+
         #wybór pobudzenia
         self.radio_var = tk.StringVar()
         self.label1 = ttk.Label(self, text="Pobudzenie:", font=("Verdana", 16))
@@ -107,7 +109,7 @@ class Page(tk.Frame):
         self.button1 = ttk.Button(self, text="Start", command=lambda: self.UpdateSim())
         self.button1.grid(row=10, column=1)
         
-        #tworzenie wykresu i panela nawigacyjnego    
+        #tworzenie wykresu i panelu nawigacyjnego    
         canvas = FigureCanvasTkAgg(f, self)
         toolbar = NavigationToolbar2Tk(canvas, self, pack_toolbar=False)
         toolbar.update()
@@ -116,14 +118,21 @@ class Page(tk.Frame):
 
     def UpdateSim(self):
         
-        self.model.update(param_a = float(self.a_var.get()), param_b = float(self.b_var.get()), param_A = float(self.A_var.get()),
-                          param_Amp = float(self.Amp_var.get()), param_B = float(self.B_var.get()), rodzaj_c = self.c_var.get(), pobudzenie = self.radio_var.get())
+        self.model.update(param_a = float(self.a_var.get()), 
+                          param_b = float(self.b_var.get()),
+                          param_A = float(self.A_var.get()),
+                          param_Amp = float(self.Amp_var.get()),
+                          param_B = float(self.B_var.get()),
+                          rodzaj_c = self.c_var.get(),
+                          pobudzenie = self.radio_var.get()
+                          )
         animate_plot()
         f.canvas.draw()
         
 class Taylor:
 
     def __init__(self):
+
         #constants
         self.T = 20.
         self.N = 10000                              #liczba kroków symulacji
@@ -131,6 +140,7 @@ class Taylor:
         self.P = 3.                                 #liczba okresów pobudzenia w czasie symulacji
         self.w = 1 / (self.T/self.P) * 2 * math.pi  #pulsacja pobudzenia (dla sinusoidy i fali prostokątnej)
 
+        #lists for data
         self.time = [i*self.h for i in range(self.N)]
         self.u = [0 for i in range(self.N)]         #pobudzenie
         self.c = [0 for i in range(self.N)]         #zmienny parametr c
@@ -148,30 +158,39 @@ class Taylor:
         self.Amp = param_Amp
 
         if rodzaj_c == "const":
-            print("rodzaj_c = const")
+
             for i in range(self.N):
+
                 self.c[i] = self.A
-            print(self.c[2])
+
         elif rodzaj_c == "var":
-            print("rodzaj_c = var")
+
             for i in range(self.N):
+
                 x = self.A + self.A*math.exp(-self.B * (i * self.h)**2 )
                 self.c[i] = x
-            print(self.c[2])
         
         if pobudzenie == "sin":
+
             for i in range(self.N):
+
                 x = self.Amp * math.sin(self.w * i * self.h)
                 self.u[i] = x
+
         elif pobudzenie == "rec":
+
             for i in range(self.N):
+
                 x = self.Amp * math.sin(self.w * i * self.h)
                 if x > 0:
                     self.u[i] = self.Amp
                 else:
                     self.u[i] = -self.Amp
+
         elif pobudzenie == "unit":
+
             for i in range(self.N):
+
                 self.u[i] = self.Amp
         
         self.calculate_y()
@@ -179,12 +198,14 @@ class Taylor:
     def calculate_y(self):
         
         for i in range(self.N-1):
+
             self.y3p[i] = -self.a * self.y2p[i] - self.b * self.y1p[i] - self.c[i] * self.y[i] + self.u[i]
             self.y2p[i+1] = self.y2p[i] + self.h * self.y3p[i]
             self.y1p[i+1] = self.y1p[i] + self.h * self.y2p[i] + (self.h ** 2 / 2.) * self.y3p[i]
             self.y[i+1] = self.y[i] + self.h * self.y1p[i] + (self.h ** 2 / 2.) * self.y2p[i] + (self.h ** 3 / 6.) * self.y3p[i]
 
 if __name__ == "__main__":
+
     model = Taylor()
     root = Window(model)
     root.mainloop()
